@@ -1,0 +1,50 @@
+/*@import "menu.css";*/
+/** 娓呴櫎鍐呭杈硅窛 **/
+body, h1, h2, h3, h4, h5, h6, hr, p,
+blockquote, /* structural elements 缁撴瀯鍏冪礌 */
+dl, dt, dd, ul, ol, li, /* list elements 鍒楄〃鍏冪礌 */
+pre, /* text formatting elements 鏂囨湰鏍煎紡鍏冪礌 */
+form, fieldset, legend, button, input, textarea, /* form elements 琛ㄥ崟鍏冪礌 */
+th, td, /* table elements 琛ㄦ牸鍏冪礌 */
+img/* img elements 鍥剧墖鍏冪礌 */{
+border:medium none;
+margin: 0;
+padding: 0;
+}
+/** 璁剧疆榛樿瀛椾綋 **/
+body,button, input, select, textarea {
+font: 12px/1.5 '瀹嬩綋',tahoma, Srial, helvetica, sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+em{font-style:normal;}
+/** 閲嶇疆鍒楄〃鍏冪礌 **/
+ul, ol { list-style: none; }
+/** 閲嶇疆瓒呴摼鎺ュ厓绱�**/
+a { text-decoration: none; color:#000;}
+a:hover { text-decoration: underline; color:#3363a7; }
+/** 閲嶇疆鍥剧墖鍏冪礌 **/
+img{ border:0px;}
+/** 閲嶇疆琛ㄦ牸鍏冪礌 **/
+table { border-collapse: collapse; border-spacing: 0; }
+
+/*娓呴櫎娴姩*/
+.clear{
+	height:0px;
+	line-height:0px;
+	font-size:0px;
+	clear:both;
+	}
+
+body{ background:#0a76b0}
+#wrap{ width:960px; margin:0 auto; background:url(login-bg.gif); height:613px;}
+#header{ height:170px;}
+#content-wrap{ width:593px; height:357px; background:url(login-bg.png); margin:0 auto;}
+.content{ width:210px; height:237px; margin:0 auto;}
+.space{ height:103px;}
+.login-btn{ width:80px; height:28px; background:url(login-btn.gif) -6px -6px;}
+.reset-btn{ width:68px; height:28px;background:url(login-bg.gif) -6px -6px;}
+.login-btn:hover{ background-position:-6px -49px;}
+.field{ height:50px;}
+.field label{ color:#dbf2ff}
+.btn{text-align:center;}
+.field input{ background:url(login-input.gif); width:159px; height:29px; line-height:29px; text-indent:35px;}
+.field .password{ background-position:0 -29px;}

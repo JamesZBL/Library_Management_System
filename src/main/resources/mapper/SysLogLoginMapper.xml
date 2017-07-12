@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zbl.dao.SysLogLoginMapper">
+	<resultMap id="BaseResultMap" type="com.zbl.entity.vo.SysLogLogin">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="clientip" property="clientip" jdbcType="VARCHAR" />
+		<result column="logintime" property="logintime" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, username, clientip, logintime,type
+	</sql>
+
+
+	<select id="selectPage" resultMap="BaseResultMap" parameterType="Map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_log_login log
+		<where>
+			1=1
+			<if test=" login_name != null and  login_name !='' ">
+				and log.username like "%${login_name}%"
+			</if>
+			<if test=" createTime != null and  createTime !='' ">
+				<![CDATA[ and log .logintime >= STR_TO_DATE("${createTime}",'%Y-%m-%d %H:%i:%s') ]]>
+			</if>
+			<if test=" createdateEnd != null  and createdateEnd !='' ">
+				<![CDATA[ and log .logintime <= STR_TO_DATE("${createdateEnd}",'%Y-%m-%d %H:%i:%s') ]]>
+			</if>
+			order by ${sort} ${order}
+		</where>
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_log_login
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_log_login
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.zbl.entity.vo.SysLogLogin">
+		insert into sys_log_login (id,
+		username, clientip,
+		logintime,type)
+		values (#{id,jdbcType=INTEGER},
+		#{username,jdbcType=VARCHAR},
+		#{clientip,jdbcType=VARCHAR},
+		#{logintime,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.zbl.entity.vo.SysLogLogin">
+		insert into sys_log_login
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="clientip != null">
+				clientip,
+			</if>
+			<if test="logintime != null">
+				logintime,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="clientip != null">
+				#{clientip,jdbcType=VARCHAR},
+			</if>
+			<if test="logintime != null">
+				#{logintime,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.zbl.entity.vo.SysLogLogin">
+		update sys_log_login
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="clientip != null">
+				clientip = #{clientip,jdbcType=VARCHAR},
+			</if>
+			<if test="logintime != null">
+				logintime = #{logintime,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.zbl.entity.vo.SysLogLogin">
+		update
+		sys_log_login
+		set username = #{username,jdbcType=VARCHAR},
+		clientip =
+		#{clientip,jdbcType=VARCHAR},
+		logintime =
+		#{logintime,jdbcType=VARCHAR},
+		type= #{type,jdbcType=INTEGER}
+		where id
+		= #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

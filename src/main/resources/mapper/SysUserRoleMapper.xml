@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbl.dao.SysUserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.zbl.entity.SysUserRoleKey">
+    <id column="userId" jdbcType="INTEGER" property="userid" />
+    <id column="roleId" jdbcType="INTEGER" property="roleid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+        id, userId AS userId, roleId AS roleId
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="com.zbl.entity.SysUserRoleKey">
+    delete from sys_user_role
+    where userId = #{userid,jdbcType=INTEGER}
+      and roleId = #{roleid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zbl.entity.SysUserRoleKey">
+    insert into sys_user_role (userId, roleId)
+    values (#{userid,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zbl.entity.SysUserRoleKey">
+    insert into sys_user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="roleid != null">
+        roleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="roleid != null">
+        #{roleid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+<select id="selectByUserId" resultType="com.zbl.entity.SysUserRoleKey" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user_role
+        where userId = #{userId}
+</select>
+
+<select id="selectRoleIdListByUserId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select 
+        roleId AS roleId
+        from sys_user_role
+        where userId = #{userId}
+</select>
+
+<select id="selectRoleNameListByUserId" resultType="java.lang.String" parameterType="java.lang.Integer">
+     SELECT `name` from sys_role where id in(select roleId from sys_user_role where userId=#{userId})
+</select>
+
+<select id="selectUrlListByUserId" resultType="java.lang.String" parameterType="java.lang.Integer">
+     SELECT url from sys_resource where id in
+		(
+				SELECT resId from sys_res_role where roleid in
+				(				
+						SELECT id from sys_role where id in
+						(
+							select roleId from sys_user_role where userId=#{userId}
+						)
+				)
+		)
+</select>
+
+</mapper>

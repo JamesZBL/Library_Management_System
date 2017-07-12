@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbl.dao.SysResRoleMapper">
+  <resultMap id="BaseResultMap" type="com.zbl.entity.SysResRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="resId" jdbcType="VARCHAR" property="resid" />
+    <result column="roleId" jdbcType="INTEGER" property="roleid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, resId, roleId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_res_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_res_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zbl.entity.SysResRole">
+    insert into sys_res_role (id, resId, roleId
+      )
+    values (#{id,jdbcType=INTEGER}, #{resid,jdbcType=VARCHAR}, #{roleid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zbl.entity.SysResRole">
+    insert into sys_res_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="resid != null">
+        resId,
+      </if>
+      <if test="roleid != null">
+        roleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="resid != null">
+        #{resid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleid != null">
+        #{roleid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zbl.entity.SysResRole">
+    update sys_res_role
+    <set>
+      <if test="resid != null">
+        resId = #{resid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleid != null">
+        roleId = #{roleid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zbl.entity.SysResRole">
+    update sys_res_role
+    set resId = #{resid,jdbcType=VARCHAR},
+      roleId = #{roleid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+     <select id="selectIdListByRoleId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT
+            e.id AS id
+        FROM
+            sys_role r
+        LEFT JOIN sys_res_role e ON r.id = e.roleId
+        WHERE
+            r.id = #{id}
+    </select>
+</mapper>

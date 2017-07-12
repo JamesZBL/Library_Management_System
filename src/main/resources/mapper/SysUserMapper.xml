@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbl.dao.SysUserMapper">
+
+	<resultMap id="userVoMap" type="com.zbl.entity.vo.UserVo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="accountname" property="accountname" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="TINYINT" />
+		<result column="age" property="age" jdbcType="TINYINT" />
+		<result column="user_type" property="userType" jdbcType="TINYINT" />
+		<result column="organization_id" property="organizationId"
+			jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="organizationName" property="organizationName"
+			jdbcType="VARCHAR" />
+		<result column="credentialssalt" jdbcType="VARCHAR" property="credentialssalt" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="locked" jdbcType="VARCHAR" property="locked" />
+		<result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+		<result column="deletestatus" jdbcType="INTEGER" property="deletestatus" />
+		<result column="roleIds" jdbcType="VARCHAR" property="roleIds" />
+		<result column="roleNames" jdbcType="VARCHAR" property="roleNames" />		
+	</resultMap>
+	<resultMap id="userVoResultMap" type="com.zbl.entity.vo.UserVo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="accountname" property="accountname" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="TINYINT" />
+		<result column="age" property="age" jdbcType="TINYINT" />
+		<result column="user_type" property="userType" jdbcType="TINYINT" />
+		<result column="organization_id" property="organizationId"
+			jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="organizationName" property="organizationName"
+			jdbcType="VARCHAR" />
+		<result column="credentialssalt" jdbcType="VARCHAR" property="credentialssalt" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="locked" jdbcType="VARCHAR" property="locked" />
+		<result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+		<result column="deletestatus" jdbcType="INTEGER" property="deletestatus" />
+
+		<collection property="rolesList" ofType="SysRole">
+			<id column="roleId" property="id" />
+			<result column="roleName" property="name" />
+		</collection>
+	</resultMap>
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, userName, accountName, password, sex, age, phone, user_type AS
+		userType, credentialsSalt, description, locked, createTime,
+		organization_id AS organizationId,deletestatus
+	</sql>
+	
+	
+	
+
+	<select id="selectUserVoById" resultMap="userVoResultMap"
+		parameterType="java.lang.Long">
+		SELECT
+		t.id,
+		accountname,
+		t.`username`,
+		`password`,
+		sex,
+		age,
+		user_type,
+		t.`locked`,
+		organization_id,
+		t.createTime,
+		phone,
+		s.`name` AS organizationName,
+		o.id AS roleId,
+		o.`name` AS roleName
+		FROM
+		sys_user t
+		LEFT JOIN sys_user_role r ON t.id = r.userId
+		LEFT JOIN sys_role o ON r.roleId = o.id
+		LEFT JOIN sys_organization s ON s.id = t.organization_id
+		<where>
+			t.id = #{id}
+		</where>
+	</select>
+
+	<select id="selectUserVoPage" resultMap="userVoMap">
+		SELECT
+		t.id,
+		accountname,
+		t.`username`,
+		`password`,
+		sex,
+		age,
+		user_type,
+		t.`locked`,
+		organization_id,
+		t.createTime,
+		phone,
+		(select group_concat(name) from sys_role
+		where sys_role.id
+		in (SELECT roleId FROM sys_user_role WHERE
+		userId=t.id) ) roleNames,
+		(select group_concat(CAST(id AS char)) from sys_role
+		where sys_role.id
+		in (SELECT roleId FROM sys_user_role WHERE
+		userId=t.id) ) roleIds,		
+		s.`name` AS organizationName				
+		FROM
+		sys_user t
+		LEFT JOIN sys_user_role r ON t.id = r.userId
+		LEFT JOIN sys_role o ON r.roleId = o.id
+		LEFT JOIN sys_organization s ON s.id = t.organization_id
+		
+		<where>
+			<if test=" name != null and name != '' ">
+				t.username = #{username}
+			</if>
+			<if test=" organizationId != null ">
+				t.organization_id = #{organizationId}
+			</if>
+			<if test=" startTime != null ">
+                <![CDATA[ and t.createTime >= #{startTime} ]]>
+			</if>
+			<if test=" endTime != null ">
+                <![CDATA[ and t.createTime <= #{endTime} ]]>
+			</if>
+		</where>
+		
+	  GROUP BY accountname
+	  
+	  order by t.id desc
+	</select>
+	<select id="findUserPage" resultType="com.zbl.entity.SysUser">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user
+		where 1 = 1
+		<if test="accountname != null and accountname != ''">
+			and accountname like '%${accountname}%'
+		</if>
+	</select>
+	<select id="selectUserIdByUserName" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select id from sys_user
+		where userName=#{userName}
+	</select>
+	<select id="findByNames" resultType="com.zbl.entity.SysUser" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user
+		where 1 = 1
+		<if test="accountname != null and accountname != ''">
+			and accountname = #{accountname}
+		</if>
+	</select>
+</mapper>
